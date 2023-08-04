@@ -1,9 +1,9 @@
 import time
-
 from selenium import webdriver
 
 from pages_test.login_page import Login_page
 from pages_test.main_page import Main_page
+from pages_test.login_page import user_list
 
 
 def test_auto():
@@ -15,7 +15,7 @@ def test_auto():
     en.main()
 
     login = Login_page(driver)
-    login.authorization()
+    login.authorization(user_list)
 
     print("Конец")
     time.sleep(5)

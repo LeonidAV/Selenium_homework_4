@@ -3,8 +3,14 @@ import time
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-
+from selenium.common.exceptions import TimeoutException
 from base.base_class import Base
+
+user_list = ["standard_user",
+             "locked_out_user",
+             "problem_user",
+             "performance_glitch_user",
+             ]
 
 
 class Login_page(Base):
@@ -40,13 +46,13 @@ class Login_page(Base):
 
     def input_login(self, login):
         self.get_login().clear()
-        time.sleep(2)
+        time.sleep(1)
         self.get_login().send_keys(login)
         print("Ввод логина")
 
     def input_password(self, password):
         self.get_password().clear()
-        time.sleep(2)
+        time.sleep(1)
         self.get_password().send_keys(password)
         print("Ввод пароля")
 
@@ -64,25 +70,15 @@ class Login_page(Base):
 
     """Methods"""
 
-    def authorization(self):
-        self.driver.maximize_window()
-        self.input_login("standard_user")
-        self.input_password("secret_sauce")
-        self.click_enter()
-        self.click_menu()
-        self.click_logout()
-        time.sleep(2)
-        self.input_login("locked_out_user")
-        self.input_password("secret_sauce")
-        self.click_enter()
-        time.sleep(2)
-        self.input_login("problem_user")
-        self.input_password("secret_sauce")
-        self.click_enter()
-        self.click_menu()
-        self.click_logout()
-        time.sleep(2)
-        self.input_login("performance_glitch_user")
-        self.input_password("secret_sauce")
-        self.click_enter()
-        time.sleep(6)
+    def authorization(self, user_list):
+        for name in user_list:
+            try:
+                self.input_login(name)
+                self.input_password("secret_sauce")
+                self.click_enter()
+                self.click_menu()
+                self.click_logout()
+                time.sleep(2)
+            except TimeoutException:
+                message = 'Epic sadface: Sorry, this user has been locked out.'
+                print(message)
